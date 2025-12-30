@@ -1,0 +1,1 @@
+export const serverURL = "https://eventease-backend-nzop.onrender.com"
