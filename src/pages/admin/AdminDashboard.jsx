@@ -10,7 +10,8 @@ export default function AdminDashboard() {
   // --- 1. Fetch Events ---
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/events");
+      // ✅ FIX: Live Backend URL
+      const res = await axios.get("https://eventease-backend-nzop.onrender.com/api/events");
       setEvents(res.data);
     } catch (err) {
       console.error("Error loading events");
@@ -20,7 +21,8 @@ export default function AdminDashboard() {
   // --- 2. Fetch All Registrations ---
   const fetchRegistrations = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/bookings/all");
+      // ✅ FIX: Live Backend URL
+      const res = await axios.get("https://eventease-backend-nzop.onrender.com/api/bookings/all");
       setRegistrations(res.data);
     } catch (err) {
       console.error("Error loading registrations");
@@ -37,7 +39,8 @@ export default function AdminDashboard() {
     if (window.confirm("Delete this event?")) {
       try {
         const role = localStorage.getItem("role");
-        await axios.delete(`http://localhost:5000/api/events/${id}`, {
+        // ✅ FIX: Live Backend URL
+        await axios.delete(`https://eventease-backend-nzop.onrender.com/api/events/${id}`, {
           headers: { role: role }
         });
         alert("Event Deleted");

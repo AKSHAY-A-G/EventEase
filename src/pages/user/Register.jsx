@@ -15,7 +15,8 @@ export default function Register() {
     };
 
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/register", formData);
+      // ✅ FIX: Using your live Render Backend URL
+      const response = await axios.post("https://eventease-backend-nzop.onrender.com/api/auth/register", formData);
       alert(response.data.message);
       navigate("/login");
     } catch (err) {

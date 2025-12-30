@@ -11,7 +11,8 @@ export default function Login() {
     e.preventDefault();
     try {
       // 1. Send login request to backend
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      // ✅ FIX: Using your live Render Backend URL
+      const response = await axios.post("https://eventease-backend-nzop.onrender.com/api/auth/login", {
         email,
         password,
       });
