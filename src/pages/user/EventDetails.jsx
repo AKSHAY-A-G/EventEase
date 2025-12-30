@@ -11,17 +11,17 @@ export default function EventDetails() {
   // Get current user ID from Session Storage
   const userId = sessionStorage.getItem("userId");
 
-  // 1. Fetch Event Details
+  // 1. Fetch Event Details (Fixed URL)
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/events/${id}`)
+    axios.get(`https://eventease-backend-nzop.onrender.com/api/events/${id}`)
       .then(res => setEvent(res.data))
       .catch(err => console.error(err));
   }, [id]);
 
-  // 2. Check if User is Already Registered
+  // 2. Check if User is Already Registered (Fixed URL)
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:5000/api/bookings/${userId}`)
+      axios.get(`https://eventease-backend-nzop.onrender.com/api/bookings/${userId}`)
         .then(res => {
           // Check if any booking in the list matches the current event ID
           // We use booking.event._id because your backend populates the event object
@@ -53,8 +53,9 @@ export default function EventDetails() {
     <div className="pt-32 pb-20 px-6 max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row gap-12 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
         <div className="md:w-1/2">
+          {/* ✅ FIX: Load image from Render Backend */}
           <img 
-            src={event.image ? `http://localhost:5000${event.image}` : "/Images/placeholder.jpg"} 
+            src={event.image ? `https://eventease-backend-nzop.onrender.com${event.image}` : "/Images/placeholder.jpg"} 
             alt={event.title} 
             className="w-full h-[450px] object-cover rounded-2xl shadow-lg" 
           />
