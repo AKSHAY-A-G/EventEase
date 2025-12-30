@@ -13,7 +13,8 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/payment/create-checkout-session", {
+      // ✅ FIX: Using your live Render Backend URL
+      const response = await axios.post("https://eventease-backend-nzop.onrender.com/api/payment/create-checkout-session", {
         eventId: id,
         title: state.title,
         price: state.price,
