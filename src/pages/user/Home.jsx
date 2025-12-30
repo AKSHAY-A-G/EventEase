@@ -49,9 +49,9 @@ const CAROUSEL_IMAGES = [
 const EventCard = ({ event }) => (
   <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition transform hover:scale-105 overflow-hidden flex flex-col">
     <Link to={`/events/${event._id}`}>
-      {/* Updated to show uploaded images from backend */}
+      {/* ✅ FIX 1: Load images from Render, not Localhost */}
       <img 
-        src={event.image ? `http://localhost:5000${event.image}` : "/Images/logo.png"} 
+        src={event.image ? `https://eventease-backend-nzop.onrender.com${event.image}` : "/Images/logo.png"} 
         alt={event.title} 
         className="w-full h-48 object-cover" 
       />
@@ -65,7 +65,6 @@ const EventCard = ({ event }) => (
         <p className="text-sm text-gray-600">📅 {event.date}</p>
         <p className="text-sm text-gray-600">📍 {event.venue}</p>
       </div>
-      {/* Price display matching your database update */}
       <p className="mt-3 text-blue-600 font-extrabold text-lg">{event.price || "Free"}</p>
       
       <Link to={`/events/${event._id}`} className="block text-center mt-auto pt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
@@ -79,8 +78,8 @@ export default function Home() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    // Fetches top 4 events
-    axios.get("http://localhost:5000/api/events")
+    // ✅ FIX 2: Fetch data from Render Backend
+    axios.get("https://eventease-backend-nzop.onrender.com/api/events")
       .then(res => setEvents(res.data.slice(0, 4))) 
       .catch(err => console.error("Error fetching events for home:", err));
   }, []);
