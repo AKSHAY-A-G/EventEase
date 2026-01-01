@@ -22,7 +22,8 @@ export default function ManageEvent() {
   // 1. Fetch data if in "Edit Mode"
   useEffect(() => {
     if (isEditing) {
-      axios.get(`http://localhost:5000/api/events/${id}`)
+      // ✅ FIX: Use Render Backend
+      axios.get(`https://eventease-backend-nzop.onrender.com/api/events/${id}`)
         .then((res) => {
           const data = res.data;
           setFormData({
@@ -34,8 +35,8 @@ export default function ManageEvent() {
             category: data.category,
             image: data.image, // Keep existing image path
           });
-          // Show existing image in preview
-          setPreview(`http://localhost:5000${data.image}`);
+          // ✅ FIX: Show existing image from Render
+          setPreview(`https://eventease-backend-nzop.onrender.com${data.image}`);
         })
         .catch((err) => console.error("Error loading event:", err));
     }
@@ -57,8 +58,6 @@ export default function ManageEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // --- FIX 1: Get Admin Role from Session Storage ---
-    // (Previously this might have been localStorage)
     const role = sessionStorage.getItem("role");
 
     if (role !== "admin") {
@@ -75,7 +74,6 @@ export default function ManageEvent() {
     data.append("description", formData.description);
     data.append("category", formData.category);
     
-    // Only append image if it's a new file (not a string path from DB)
     if (formData.image instanceof File) {
       data.append("image", formData.image);
     }
@@ -84,26 +82,23 @@ export default function ManageEvent() {
       const config = {
         headers: { 
           "Content-Type": "multipart/form-data",
-          // --- FIX 2: Send Role Header to Backend ---
-          // This allows your backend 'authMiddleware' (if used) or route check to pass
           "role": role 
         },
       };
 
       if (isEditing) {
-        // Update existing event
-        await axios.put(`http://localhost:5000/api/events/${id}`, data, config);
+        // ✅ FIX: Update existing event on Render
+        await axios.put(`https://eventease-backend-nzop.onrender.com/api/events/${id}`, data, config);
         alert("Event Updated Successfully!");
       } else {
-        // Create new event
-        await axios.post("http://localhost:5000/api/events", data, config);
+        // ✅ FIX: Create new event on Render
+        await axios.post("https://eventease-backend-nzop.onrender.com/api/events", data, config);
         alert("Event Created Successfully!");
       }
 
       navigate("/admin/dashboard");
     } catch (err) {
       console.error("Save Error:", err);
-      // Detailed error message for debugging
       const errorMsg = err.response?.data?.message || "Error saving event. Check console.";
       alert(errorMsg);
     }
