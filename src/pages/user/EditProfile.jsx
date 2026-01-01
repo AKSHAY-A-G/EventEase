@@ -18,7 +18,8 @@ export default function EditProfile() {
   // 1. Fetch user data
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:5000/api/auth/user/${userId}`)
+      // ✅ FIX: Use Render Backend
+      axios.get(`https://eventease-backend-nzop.onrender.com/api/auth/user/${userId}`)
         .then(res => {
           setFormData({
             fullName: res.data.fullName || res.data.name || "", 
@@ -65,7 +66,8 @@ export default function EditProfile() {
         profilePic: formData.profilePic
       };
 
-      await axios.put(`http://localhost:5000/api/auth/user/${userId}`, updatedData);
+      // ✅ FIX: Use Render Backend
+      await axios.put(`https://eventease-backend-nzop.onrender.com/api/auth/user/${userId}`, updatedData);
       
       // Update Session Storage so the navbar updates immediately
       sessionStorage.setItem("userName", updatedData.fullName);

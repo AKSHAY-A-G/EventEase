@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // 1. Import Axios
+import axios from "axios"; 
 import Navbar from "../../components/Navbar";
 
 export default function Profile() {
@@ -19,7 +19,8 @@ export default function Profile() {
   // 3. Fetch Latest Data from Backend
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:5000/api/auth/user/${userId}`)
+      // ✅ FIX: Use Render Backend
+      axios.get(`https://eventease-backend-nzop.onrender.com/api/auth/user/${userId}`)
         .then(res => {
           setUserData({
             fullName: res.data.fullName || res.data.name || "User",
