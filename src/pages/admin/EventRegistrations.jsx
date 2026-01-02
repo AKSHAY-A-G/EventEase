@@ -15,7 +15,8 @@ export default function EventRegistrations() {
 
   const fetchEventBookings = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/bookings/event/${id}`);
+      // ✅ FIX: Use Live Render Backend URL instead of localhost
+      const res = await axios.get(`https://eventease-backend-nzop.onrender.com/api/bookings/event/${id}`);
       setBookings(res.data);
       
       if (res.data.length > 0 && res.data[0].event) {
@@ -39,9 +40,9 @@ export default function EventRegistrations() {
     if (!dateString) return { date: "N/A", time: "" };
     const dateObj = new Date(dateString);
     
-    // Format Date: 28 Dec 2025
-    const date = dateObj.toLocaleDateString("en-IN", {
-      day: '2-digit', month: 'short', year: 'numeric'
+    // Format Date: 28/12/2025 (UK/India Format)
+    const date = dateObj.toLocaleDateString("en-GB", {
+      day: '2-digit', month: '2-digit', year: 'numeric'
     });
 
     // Format Time: 06:14 PM
@@ -78,7 +79,7 @@ export default function EventRegistrations() {
                 <th className="p-6">User Name</th>
                 <th className="p-6">Email Address</th>
                 <th className="p-6">Payment Status</th>
-                <th className="p-6">Date & Time</th> {/* Updated Header */}
+                <th className="p-6">Date & Time</th> 
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -90,8 +91,8 @@ export default function EventRegistrations() {
                 </tr>
               ) : bookings.length > 0 ? (
                 bookings.map((booking) => {
-                  // Use 'bookedAt' from your DB, fallback to 'createdAt'
-                  const { date, time } = formatDateTime(booking.bookedAt || booking.createdAt);
+                  // Use 'createdAt' since most Mongoose schemas usually have timestamps
+                  const { date, time } = formatDateTime(booking.createdAt);
 
                   return (
                     <tr key={booking._id} className="hover:bg-blue-50 transition duration-150">
@@ -110,7 +111,6 @@ export default function EventRegistrations() {
                         </span>
                       </td>
 
-                      {/* --- UPDATED: Date and Time Column --- */}
                       <td className="p-6">
                         <div className="flex flex-col">
                           <span className="font-bold text-gray-800 text-sm">
