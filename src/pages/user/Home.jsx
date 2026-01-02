@@ -62,8 +62,8 @@ const EventCard = ({ event }) => (
       </span>
       <h3 className="mt-3 text-lg font-bold text-gray-900 line-clamp-1">{event.title}</h3>
       <div className="mt-2 space-y-1">
-        {/* Formatted Date */}
-        <p className="text-sm text-gray-600">📅 {new Date(event.date).toLocaleDateString()}</p>
+        {/* ✅ FIXED: Date Format to dd/mm/yyyy */}
+        <p className="text-sm text-gray-600">📅 {new Date(event.date).toLocaleDateString('en-GB')}</p>
         <p className="text-sm text-gray-600">📍 {event.venue}</p>
       </div>
       <p className="mt-3 text-blue-600 font-extrabold text-lg">{event.price ? `₹${event.price}` : "Free"}</p>

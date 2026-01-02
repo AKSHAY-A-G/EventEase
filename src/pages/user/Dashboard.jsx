@@ -13,7 +13,7 @@ export default function Dashboard() {
   // --- FETCH BOOKINGS ---
   const fetchBookings = async () => {
     try {
-      // ✅ FIX: Using Live Render Backend
+      // Using Live Render Backend
       const res = await axios.get(`https://eventease-backend-nzop.onrender.com/api/bookings/${userId}`);
       
       // Filter out invalid events
@@ -94,7 +94,8 @@ export default function Dashboard() {
                     className="w-full h-40 object-cover rounded-xl mb-4"
                   />
                   <h3 className="font-bold text-lg mb-2 text-gray-800 leading-tight">{booking.event.title}</h3>
-                  <p className="text-sm text-gray-600">📅 {new Date(booking.event.date).toLocaleDateString()}</p>
+                  {/* ✅ FIXED: Date Format to dd/mm/yyyy */}
+                  <p className="text-sm text-gray-600">📅 {new Date(booking.event.date).toLocaleDateString('en-GB')}</p>
                   <p className="text-sm text-gray-600 mb-4">📍 {booking.event.venue}</p>
                   <div className="mt-auto pt-4 border-t border-gray-200">
                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold uppercase">PAID</span>
@@ -103,7 +104,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            // ✅ FIX: Empty State specifically for "Upcoming" (when user has past events but no new ones)
+            // Empty State specifically for "Upcoming"
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <p className="text-gray-500 italic mb-4">No upcoming events found.</p>
               <button 
@@ -131,7 +132,8 @@ export default function Dashboard() {
                     className="w-full h-40 object-cover rounded-xl mb-4 opacity-70"
                   />
                   <h3 className="font-bold text-lg mb-2 text-gray-700 leading-tight">{booking.event.title}</h3>
-                  <p className="text-sm text-gray-500">📅 {new Date(booking.event.date).toLocaleDateString()}</p>
+                  {/* ✅ FIXED: Date Format to dd/mm/yyyy */}
+                  <p className="text-sm text-gray-500">📅 {new Date(booking.event.date).toLocaleDateString('en-GB')}</p>
                   <p className="text-sm text-gray-500 mb-4">📍 {booking.event.venue}</p>
                   <div className="mt-auto pt-4 border-t border-gray-200">
                      <span className="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-bold uppercase">COMPLETED</span>
