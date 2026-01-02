@@ -38,15 +38,24 @@ export default function AdminDashboard() {
   const handleDelete = async (id) => {
     if (window.confirm("Delete this event?")) {
       try {
-        const role = localStorage.getItem("role");
+        // ✅ FIX: Use sessionStorage (Matches your Login logic)
+        const role = sessionStorage.getItem("role");
+
+        if (!role) {
+          alert("Error: You are not logged in as Admin.");
+          return;
+        }
+
         // ✅ FIX: Live Backend URL
         await axios.delete(`https://eventease-backend-nzop.onrender.com/api/events/${id}`, {
           headers: { role: role }
         });
-        alert("Event Deleted");
-        fetchEvents(); 
+        
+        alert("Event Deleted Successfully");
+        fetchEvents(); // Refresh list
       } catch (err) {
-        alert("Delete failed.");
+        console.error("Delete Error:", err);
+        alert("Delete failed. Check console for details.");
       }
     }
   };
@@ -79,7 +88,10 @@ export default function AdminDashboard() {
                 <td className="p-5 font-semibold text-gray-800">{event.title}</td>
                 <td className="p-5 text-gray-600">{event.category}</td>
                 <td className="p-5 font-bold text-blue-600">₹{event.price}</td>
-                <td className="p-5 text-gray-600 text-center">{event.date}</td>
+                {/* Format Date Nicely */}
+                <td className="p-5 text-gray-600 text-center">
+                  {new Date(event.date).toLocaleDateString()}
+                </td>
                 
                 {/* ACTIONS COLUMN */}
                 <td className="p-5 flex justify-center gap-2">
@@ -106,9 +118,6 @@ export default function AdminDashboard() {
           </tbody>
         </table>
       </div>
-
-      
-
     </div>
   );
 }
