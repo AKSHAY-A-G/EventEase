@@ -76,7 +76,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-blue-700 px-6 py-4 space-y-3 text-white">
+        <div className="md:hidden bg-blue-400 px-6 py-4 space-y-3 text-white">
           <NavLink to="/" className={linkClass} onClick={() => setMenuOpen(false)}>
             <i className="fas fa-home mr-2"></i> Home
           </NavLink>

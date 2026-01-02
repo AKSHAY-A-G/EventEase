@@ -52,7 +52,7 @@ export default function Login() {
             <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Email Address</label>
             <input
               type="email"
-              placeholder="akshayag2277@gmail.com"
+              placeholder="EventEase@gmail.com"
               className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
