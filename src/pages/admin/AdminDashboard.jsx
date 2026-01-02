@@ -10,9 +10,13 @@ export default function AdminDashboard() {
   // --- 1. Fetch Events ---
   const fetchEvents = async () => {
     try {
-      // ✅ FIX: Live Backend URL
       const res = await axios.get("https://eventease-backend-nzop.onrender.com/api/events");
-      setEvents(res.data);
+      
+      // ✅ FIX 1: Sort by Date Descending (Latest/Future dates first)
+      // If you want "Soonest" events first, swap a and b: (a.date) - (b.date)
+      const sortedEvents = res.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      setEvents(sortedEvents);
     } catch (err) {
       console.error("Error loading events");
     }
@@ -21,7 +25,6 @@ export default function AdminDashboard() {
   // --- 2. Fetch All Registrations ---
   const fetchRegistrations = async () => {
     try {
-      // ✅ FIX: Live Backend URL
       const res = await axios.get("https://eventease-backend-nzop.onrender.com/api/bookings/all");
       setRegistrations(res.data);
     } catch (err) {
@@ -38,7 +41,6 @@ export default function AdminDashboard() {
   const handleDelete = async (id) => {
     if (window.confirm("Delete this event?")) {
       try {
-        // ✅ FIX: Use sessionStorage (Matches your Login logic)
         const role = sessionStorage.getItem("role");
 
         if (!role) {
@@ -46,7 +48,6 @@ export default function AdminDashboard() {
           return;
         }
 
-        // ✅ FIX: Live Backend URL
         await axios.delete(`https://eventease-backend-nzop.onrender.com/api/events/${id}`, {
           headers: { role: role }
         });
@@ -88,19 +89,18 @@ export default function AdminDashboard() {
                 <td className="p-5 font-semibold text-gray-800">{event.title}</td>
                 <td className="p-5 text-gray-600">{event.category}</td>
                 <td className="p-5 font-bold text-blue-600">₹{event.price}</td>
-                {/* Format Date Nicely */}
+                
+                {/* ✅ FIX 2: Format Date to Day/Month/Year (DD/MM/YYYY) */}
                 <td className="p-5 text-gray-600 text-center">
-                  {new Date(event.date).toLocaleDateString()}
+                  {new Date(event.date).toLocaleDateString('en-GB')}
                 </td>
                 
                 {/* ACTIONS COLUMN */}
                 <td className="p-5 flex justify-center gap-2">
-                  {/* Edit Button */}
                   <Link to={`/admin/manage-event/${event._id}`} className="bg-amber-100 text-amber-700 px-3 py-2 rounded-lg font-bold text-sm hover:bg-amber-200">
                     Edit
                   </Link>
 
-                  {/* View Users Button */}
                   <button 
                     onClick={() => navigate(`/admin/registrations/${event._id}`)}
                     className="bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg font-bold text-sm hover:bg-indigo-200"
@@ -108,7 +108,6 @@ export default function AdminDashboard() {
                     View Registrations
                   </button>
 
-                  {/* Delete Button */}
                   <button onClick={() => handleDelete(event._id)} className="bg-red-100 text-red-700 px-3 py-2 rounded-lg font-bold text-sm hover:bg-red-200">
                     Delete
                   </button>
