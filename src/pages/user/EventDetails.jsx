@@ -11,14 +11,14 @@ export default function EventDetails() {
   // Get current user ID from Session Storage
   const userId = sessionStorage.getItem("userId");
 
-  // 1. Fetch Event Details (✅ FIXED: Render URL)
+  // 1. Fetch Event Details
   useEffect(() => {
     axios.get(`https://eventease-backend-nzop.onrender.com/api/events/${id}`)
       .then(res => setEvent(res.data))
       .catch(err => console.error(err));
   }, [id]);
 
-  // 2. Check if User is Already Registered (✅ FIXED: Render URL)
+  // 2. Check if User is Already Registered
   useEffect(() => {
     if (userId) {
       axios.get(`https://eventease-backend-nzop.onrender.com/api/bookings/${userId}`)
@@ -31,10 +31,14 @@ export default function EventDetails() {
     }
   }, [id, userId]);
 
+  // --- 📅 DATE CHECK LOGIC ---
+  // We determine if the event is strictly in the past (Yesterday or before)
+  const isEventOver = event ? new Date(event.date).setHours(0,0,0,0) < new Date().setHours(0,0,0,0) : false;
+
   // Function to handle the redirect to payment
   const handleRegister = () => {
-    // Prevent navigation if already registered
-    if (isRegistered) return;
+    // Prevent navigation if already registered or event is over
+    if (isRegistered || isEventOver) return;
 
     if (!userId) {
       alert("Please login to register!");
@@ -52,7 +56,7 @@ export default function EventDetails() {
     <div className="pt-32 pb-20 px-6 max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row gap-12 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
         <div className="md:w-1/2">
-          {/* ✅ FIXED: Image loading from Render */}
+          {/* Image loading from Render */}
           <img 
             src={event.image ? `https://eventease-backend-nzop.onrender.com${event.image}` : "/Images/placeholder.jpg"} 
             alt={event.title} 
@@ -67,9 +71,10 @@ export default function EventDetails() {
           <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{event.title}</h1>
           
           <div className="grid grid-cols-1 gap-4 text-gray-600 mb-8">
-            <p className="text-lg">📅 <strong>Date:</strong> {event.date}</p>
+            {/* Display formatted date */}
+            <p className="text-lg">📅 <strong>Date:</strong> {new Date(event.date).toDateString()}</p>
             <p className="text-lg">📍 <strong>Venue:</strong> {event.venue}</p>
-            <p className="text-lg text-blue-600 font-bold">💰 <strong>Price:</strong> {event.price}</p>
+            <p className="text-lg text-blue-600 font-bold">💰 <strong>Price:</strong> ₹{event.price}</p>
           </div>
 
           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 mb-8 text-gray-600">
@@ -77,17 +82,24 @@ export default function EventDetails() {
              {event.description}
           </div>
 
-          {/* Updated Button Logic */}
+          {/* --- UPDATED BUTTON LOGIC --- */}
           <button 
             onClick={handleRegister}
-            disabled={isRegistered} // Disable click if registered
+            disabled={isRegistered || isEventOver} // Disable if registered OR event is over
             className={`w-full py-4 rounded-xl font-bold text-xl transition shadow-lg 
               ${isRegistered 
-                ? "bg-green-100 text-green-700 cursor-not-allowed border border-green-200" // Registered Style
-                : "bg-blue-600 text-white hover:bg-blue-700 active:scale-95" // Normal Style
+                ? "bg-green-100 text-green-700 cursor-not-allowed border border-green-200" // Registered
+                : isEventOver
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed border border-gray-300" // Event Ended
+                  : "bg-blue-600 text-white hover:bg-blue-700 active:scale-95" // Available
               }`}
           >
-            {isRegistered ? "✅ Already Registered" : "Register for Event"}
+            {isRegistered 
+              ? "✅ Already Registered" 
+              : isEventOver 
+                ? "⛔ Event Ended" 
+                : "Register for Event"
+            }
           </button>
         </div>
       </div>
