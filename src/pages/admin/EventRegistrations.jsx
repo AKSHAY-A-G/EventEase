@@ -15,7 +15,6 @@ export default function EventRegistrations() {
 
   const fetchEventBookings = async () => {
     try {
-      // ✅ FIX: Use Live Render Backend URL instead of localhost
       const res = await axios.get(`https://eventease-backend-nzop.onrender.com/api/bookings/event/${id}`);
       setBookings(res.data);
       
@@ -29,18 +28,21 @@ export default function EventRegistrations() {
     }
   };
 
-  // Helper function to find the correct name field
   const getUserName = (user) => {
     if (!user) return <span className="text-red-400">User Deleted</span>;
     return user.fullName || user.name || user.username || user.email;
   };
 
-  // Helper to format Date & Time
-  const formatDateTime = (dateString) => {
+  // ✅ FIX: Check BOTH 'createdAt' (New) and 'bookedAt' (Old)
+  const formatDateTime = (booking) => {
+    // 1. Try to find a valid date field
+    const dateString = booking.createdAt || booking.bookedAt;
+
     if (!dateString) return { date: "N/A", time: "" };
+
     const dateObj = new Date(dateString);
     
-    // Format Date: 28/12/2025 (UK/India Format)
+    // Format Date: 28/12/2025
     const date = dateObj.toLocaleDateString("en-GB", {
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
@@ -57,7 +59,6 @@ export default function EventRegistrations() {
     <div className="min-h-screen bg-gray-50 pt-28 px-6 pb-12">
       <div className="max-w-5xl mx-auto">
         
-        {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <p className="text-gray-500 uppercase text-xs font-bold tracking-wider mb-1">Registrations For</p>
@@ -71,7 +72,6 @@ export default function EventRegistrations() {
           </button>
         </div>
 
-        {/* TABLE */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead className="bg-gray-50 text-gray-500 font-bold uppercase text-xs tracking-wider">
@@ -91,8 +91,8 @@ export default function EventRegistrations() {
                 </tr>
               ) : bookings.length > 0 ? (
                 bookings.map((booking) => {
-                  // Use 'createdAt' since most Mongoose schemas usually have timestamps
-                  const { date, time } = formatDateTime(booking.createdAt);
+                  // ✅ Pass the whole booking object to the helper
+                  const { date, time } = formatDateTime(booking);
 
                   return (
                     <tr key={booking._id} className="hover:bg-blue-50 transition duration-150">
@@ -139,7 +139,6 @@ export default function EventRegistrations() {
           </table>
         </div>
         
-        {/* Footer Count */}
         {!loading && bookings.length > 0 && (
           <div className="mt-4 text-right text-gray-500 text-sm font-medium">
             Total Registrations: <span className="text-gray-800 font-bold">{bookings.length}</span>
