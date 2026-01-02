@@ -49,7 +49,7 @@ const CAROUSEL_IMAGES = [
 const EventCard = ({ event }) => (
   <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition transform hover:scale-105 overflow-hidden flex flex-col">
     <Link to={`/events/${event._id}`}>
-      {/* ✅ FIX 1: Load images from Render, not Localhost */}
+      {/* Load images from Render */}
       <img 
         src={event.image ? `https://eventease-backend-nzop.onrender.com${event.image}` : "/Images/logo.png"} 
         alt={event.title} 
@@ -62,10 +62,11 @@ const EventCard = ({ event }) => (
       </span>
       <h3 className="mt-3 text-lg font-bold text-gray-900 line-clamp-1">{event.title}</h3>
       <div className="mt-2 space-y-1">
-        <p className="text-sm text-gray-600">📅 {event.date}</p>
+        {/* Formatted Date */}
+        <p className="text-sm text-gray-600">📅 {new Date(event.date).toLocaleDateString()}</p>
         <p className="text-sm text-gray-600">📍 {event.venue}</p>
       </div>
-      <p className="mt-3 text-blue-600 font-extrabold text-lg">{event.price || "Free"}</p>
+      <p className="mt-3 text-blue-600 font-extrabold text-lg">{event.price ? `₹${event.price}` : "Free"}</p>
       
       <Link to={`/events/${event._id}`} className="block text-center mt-auto pt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
         View Details
@@ -78,9 +79,22 @@ export default function Home() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    // ✅ FIX 2: Fetch data from Render Backend
+    // Fetch data from Render Backend
     axios.get("https://eventease-backend-nzop.onrender.com/api/events")
-      .then(res => setEvents(res.data.slice(0, 4))) 
+      .then(res => {
+        const allEvents = res.data;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to ensure we include today's events
+
+        // 1. Filter: Only show events that are Today or in the Future
+        const upcomingEvents = allEvents.filter(event => new Date(event.date) >= today);
+
+        // 2. Sort: Show the soonest events first
+        const sortedEvents = upcomingEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // 3. Slice: Take only the first 4
+        setEvents(sortedEvents.slice(0, 4));
+      })
       .catch(err => console.error("Error fetching events for home:", err));
   }, []);
 
@@ -100,7 +114,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="text-center py-20 border-2 border-dashed border-gray-200 rounded-2xl">
-            <p className="text-gray-400">No events published yet. Check back soon!</p>
+            <p className="text-gray-400">No upcoming events right now. Check back soon!</p>
           </div>
         )}
 

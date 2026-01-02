@@ -29,7 +29,6 @@ export default function Dashboard() {
     const status = query.get("status");
     const eventId = query.get("eventId");
 
-    // ✅ FIX: Registering on Live Render Backend
     if (status === "success" && eventId) {
       axios.post("https://eventease-backend-nzop.onrender.com/api/bookings", {
         userId,
@@ -52,7 +51,7 @@ export default function Dashboard() {
 
   // --- 📅 SEPARATE UPCOMING & PAST EVENTS ---
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Reset time to compare dates accurately
+  today.setHours(0, 0, 0, 0); 
 
   const upcomingEvents = bookings.filter(b => new Date(b.event.date) >= today);
   const completedEvents = bookings.filter(b => new Date(b.event.date) < today);
@@ -76,6 +75,7 @@ export default function Dashboard() {
           </h2>
           
           {bookings.length === 0 ? (
+            // Global Empty State (No bookings at all)
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <h3 className="text-xl font-bold text-gray-700 mb-2">No Registrations Yet</h3>
               <p className="text-gray-500 mb-8 max-w-md">Browse our events and find one that interests you!</p>
@@ -84,6 +84,7 @@ export default function Dashboard() {
               </button>
             </div>
           ) : upcomingEvents.length > 0 ? (
+            // Grid of Upcoming Events
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingEvents.map((booking) => (
                 <div key={booking._id} className="border border-gray-100 rounded-2xl p-4 hover:shadow-lg transition bg-gray-50 flex flex-col h-full">
@@ -102,7 +103,16 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 italic">No upcoming events found.</p>
+            // ✅ FIX: Empty State specifically for "Upcoming" (when user has past events but no new ones)
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <p className="text-gray-500 italic mb-4">No upcoming events found.</p>
+              <button 
+                onClick={() => navigate("/events")} 
+                className="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 transition shadow-md"
+              >
+                Browse All Events
+              </button>
+            </div>
           )}
         </div>
 
